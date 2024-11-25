@@ -1,13 +1,12 @@
 const router = require("express").Router();
 const { User } = require("../models/user");
-const Joi = require("joi");
 const Token = require("../models/token");
 const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
 const bcrypt = require("bcrypt");
+const Joi = require("joi");
 
-
-router.post("/", async (req, res) => {
+router.post("/login", async (req, res) => {
 	try {
 		const { error } = validate(req.body);
 		if (error)
@@ -23,7 +22,7 @@ router.post("/", async (req, res) => {
 		);
 		if (!validPassword)
 			return res.status(401).send({ message: "Invalid Email or Password" });
-		
+
 		if (!user.verified) {
 			let token = await Token.findOne({ userId: user._id });
 			if (!token) {
